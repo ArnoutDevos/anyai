@@ -14,24 +14,9 @@ app = Flask(__name__)
 api = ModelApi()
 
 
-@app.route('/dish', methods=['POST'])
-def dish():
-
-    if 'image' not in request.files:
-        return "No file"
-    image = request.files['image']
-
-    if not image:
-        return "No file"
-
-    image.save("test.png")
-
-    return jsonify({"class": api.get_class_id("test.png")})
-
-
 @app.route('/dish64', methods=['POST'])
 def dish64():
-    data = request.form.get('data')
+    data = request.form.get('food')
     if not data:
         return "No data"
 
@@ -39,8 +24,10 @@ def dish64():
     image = Image.open(BytesIO(base64.b64decode(data)))
     image.save("test.png")
 
-    return jsonify({"class": api.get_class_id("test.png")})
-
+    return jsonify({"person": "arnout",
+                    "status": "PhD",
+                    "food": api.get_class_id("test.png"),
+                    "price": 11.50})
 
 @app.route('/')
 def index():
