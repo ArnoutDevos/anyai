@@ -54,8 +54,8 @@ const HomePage: React.FC = () => {
 
   const takeScreenshot = () => {
     let screenshots = {
-      person: screenshot(personRef.current as HTMLVideoElement),
-      food: screenshot(foodRef.current as HTMLVideoElement)
+      // data: screenshot(personRef.current as HTMLVideoElement)
+      data: screenshot(foodRef.current as HTMLVideoElement)
     };
 
     fetch('/dish', {
@@ -63,10 +63,9 @@ const HomePage: React.FC = () => {
       // mode: 'cors', // no-cors, *cors, same-origin
       // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
       // credentials: 'same-origin', // include, *same-origin, omit
-      // headers: {
-      //   'Content-Type': 'application/json'
-      //   // 'Content-Type': 'application/x-www-form-urlencoded',
-      // },
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(screenshots)
     }).then((response) => {
       response.json().then((data: Result) => {
@@ -81,7 +80,7 @@ const HomePage: React.FC = () => {
     if (!transaction) {
       interval = setInterval(() => {
         takeScreenshot();
-      }, 1000);
+      }, 500);
     } else {
       clearInterval(interval);
     }
@@ -96,22 +95,33 @@ const HomePage: React.FC = () => {
       <Row className="mt-4">
         <Col sm={8}>
           <video ref={foodRef} autoPlay playsInline muted style={{ 'width': '100%' }} />
-          <h2 className="text-center">
-            Food:
-                <Spinner animation="grow" />
-            <Spinner animation="grow" />
-            <Spinner animation="grow" />
-
-          </h2>
+          {transaction && (
+            <h2 className="text-center">
+              {transaction.food} - ${transaction.price}
+            </h2>
+          )}
+          {!transaction && (
+            <h2 className="text-center">
+              Food:
+              <Spinner animation="grow" />
+              <Spinner animation="grow" />
+              <Spinner animation="grow" />
+            </h2>
+          )}
         </Col>
 
         <Col sm={4}>
           <video ref={personRef} autoPlay playsInline muted style={{ 'width': '100%' }} />
-          <div className="text-center">
-            <Spinner animation="grow" />
-            <Spinner animation="grow" />
-            <Spinner animation="grow" />
-          </div>
+          {transaction && (
+            <h1>{transaction.person}</h1>
+          )}
+          {!transaction && (
+            <div className="text-center">
+              <Spinner animation="grow" />
+              <Spinner animation="grow" />
+              <Spinner animation="grow" />
+            </div>
+          )}
           <Button variant="primary" onClick={takeScreenshot}>Screenshot</Button>
         </Col>
       </Row>
