@@ -14,14 +14,43 @@
         <input type="submit" name="submit" value="Submit" />
       </fieldset>
     </form>
+    <div>
+      <h1>Take a snapshot of the current video stream</h1>
+      <p>
+        <button onclick="snapshot();">Take Snapshot</button>
+      </p>
+      <div id="my_camera"></div>
+      <p>Screenshots :</p>
+      <div id="results"></div>
+    </div>
   </body>
-  <script
-    src="https://code.jquery.com/jquery-3.4.1.js"
-    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-    crossorigin="anonymous"
-  ></script>
+  <style>
+    #myOnlineCamera video {
+      width: 320px;
+      height: 240px;
+      margin: 15px;
+      float: left;
+    }
+
+    #myOnlineCamera canvas {
+      width: 320px;
+      height: 240px;
+      margin: 15px;
+      float: left;
+    }
+
+    #myOnlineCamera button {
+      clear: both;
+      margin: 30px;
+    }
+  </style>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+
   <script>
-    $("#imageForm").submit(function(e) {
+    $("#imageForm").submit(submit_image);
+
+    function submit_image(e) {
       e.preventDefault();
       var file_data = $("#image").prop("files")[0];
       var form_data = new FormData();
@@ -36,6 +65,36 @@
           console.log(e);
         }
       });
+    }
+  </script>
+  <script type="text/javascript" src="static/webcam.min.js"></script>
+  <script>
+    Webcam.set({
+      width: 256,
+      height: 256,
+      image_format: "jpeg",
+      jpeg_quality: 90
     });
+
+    Webcam.attach("#my_camera");
+
+    function snapshot() {
+      Webcam.snap(function(data_uri) {
+        submit_base_64(data_uri);
+        document.getElementById("results").innerHTML =
+          '<img src="' + data_uri + '"/>';
+      });
+    }
+
+    function submit_base_64(data) {
+      $.ajax({
+        url: "/dish",
+        type: "post",
+        data: { data: data },
+        success: function(e) {
+          console.log(e);
+        }
+      });
+    }
   </script>
 </html>
