@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Upload</title>
+  </head>
+
+  <body>
+    <form id="imageForm" enctype="multipart/form-data">
+      <fieldset>
+        <input type="file" name="image" id="image" />
+        <input type="submit" name="submit" value="Submit" />
+      </fieldset>
+    </form>
+  </body>
+  <script
+    src="https://code.jquery.com/jquery-3.4.1.js"
+    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    $("#imageForm").submit(function(e) {
+      e.preventDefault();
+      var file_data = $("#image").prop("files")[0];
+      var form_data = new FormData();
+      form_data.append("image", file_data);
+      $.ajax({
+        url: "/dish",
+        type: "post",
+        processData: false,
+        contentType: false,
+        data: form_data,
+        success: function(e) {
+          console.log(e);
+        }
+      });
+    });
+  </script>
+</html>
