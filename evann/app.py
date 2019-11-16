@@ -16,18 +16,18 @@ api = ModelApi()
 
 @app.route('/dish', methods=['POST'])
 def dish64():
-    data = request.form.get('data')
-    print(request.form)
+    data = request.json.get('data')
+    # print(request.json)
     if not data:
         return "No data"
 
     data = re.sub('^data:image/.+;base64,', '', data)
     image = Image.open(BytesIO(base64.b64decode(data)))
-    image.save("test.png")
+    # image.save("test.jpg")
 
     return jsonify({"person": "arnout",
                     "status": "PhD",
-                    "food": api.get_class_id("test.png"),
+                    "food": api.get_class_id(image),
                     "price": 11.50})
 
 @app.route('/')

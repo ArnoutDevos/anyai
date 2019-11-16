@@ -15,11 +15,11 @@ class ModelApi(object):
             './models/keras_model_cookies.h5')
         self.model._make_predict_function()
 
-    def get_class_id(self, path):
+    def get_class_id(self, image):
         # Load the model
-        image = Image.open(path, "r")
+        # image = Image.open(path, "r")
 
-        print("opened image")
+        # print("opened image")
         # image = Image.open('./training_data/blue_cookie.png')
 
         data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)

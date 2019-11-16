@@ -69,8 +69,9 @@ const HomePage: React.FC = () => {
       body: JSON.stringify(screenshots)
     }).then((response) => {
       response.json().then((data: Result) => {
-        // console.log(data)
-        setTransaction(data)
+        if (data.food !== "background") {
+          setTransaction(data)
+        }
       })
     })
   }
