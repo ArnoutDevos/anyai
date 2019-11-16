@@ -1,3 +1,7 @@
+from PIL import Image
+import base64
+import re
+from io import BytesIO
 import os
 import random
 from werkzeug.utils import secure_filename
@@ -13,22 +17,29 @@ api = ModelApi()
 @app.route('/dish', methods=['POST'])
 def dish():
 
-    if 'food' not in request.files:
+    if 'image' not in request.files:
         return "No file"
-    image = request.files['food']
+    image = request.files['image']
 
     if not image:
         return "No file"
 
     image.save("test.png")
 
-    return jsonify({"person": "arnout",
-                    "status": "PhD",
-                    "food": api.get_class_id("test.png"),
-                    "price": 11.50})
+    return jsonify({"class": api.get_class_id("test.png")})
 
-def get_class_ida(a):
-    return 0
+
+@app.route('/dish64', methods=['POST'])
+def dish64():
+    data = request.form.get('data')
+    if not data:
+        return "No data"
+
+    data = re.sub('^data:image/.+;base64,', '', data)
+    image = Image.open(BytesIO(base64.b64decode(data)))
+    image.save("test.png")
+
+    return jsonify({"class": api.get_class_id("test.png")})
 
 
 @app.route('/')
