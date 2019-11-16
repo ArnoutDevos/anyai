@@ -13,17 +13,19 @@ api = ModelApi()
 @app.route('/dish', methods=['POST'])
 def dish():
 
-    if 'image' not in request.files:
+    if 'food' not in request.files:
         return "No file"
-    image = request.files['image']
+    image = request.files['food']
 
     if not image:
         return "No file"
 
     image.save("test.png")
 
-    return jsonify({"class": api.get_class_id("test.png")})
-
+    return jsonify({"person": "arnout",
+                    "status": "PhD",
+                    "food": api.get_class_id("test.png"),
+                    "price": 11.50})
 
 def get_class_ida(a):
     return 0
