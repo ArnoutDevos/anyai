@@ -14,7 +14,7 @@ app = Flask(__name__)
 api = ModelApi()
 
 
-@app.route('/dish64', methods=['POST'])
+@app.route('/dish', methods=['POST'])
 def dish64():
     data = request.form.get('food')
     if not data:
