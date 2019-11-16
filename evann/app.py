@@ -11,23 +11,27 @@ from model_api import ModelApi
 
 app = Flask(__name__)
 
-api = ModelApi()
-
+api_food = ModelApi('./models/keras_model_cookies.h5', ['blue cookie', 'green cookie', 'empty plate', 'background'])
+api_person = ModelApi('./models/keras_model_people.h5', ['ivan', 'arnout', 'evann', 'background'])
 
 @app.route('/dish', methods=['POST'])
 def dish64():
     data = request.json.get('data')
+    person = request.json.get('person')
     # print(request.json)
-    if not data:
+    if not data or not person:
         return "No data"
 
     data = re.sub('^data:image/.+;base64,', '', data)
     image = Image.open(BytesIO(base64.b64decode(data)))
-    # image.save("test.jpg")
 
-    return jsonify({"person": "arnout",
+    person = re.sub('^data:image/.+;base64,', '', person)
+    person_image = Image.open(BytesIO(base64.b64decode(person)))
+    person_image.save("test.jpg")
+
+    return jsonify({"person": api_person.get_class_id(person_image),
                     "status": "PhD",
-                    "food": api.get_class_id(image),
+                    "food": api_food.get_class_id(image),
                     "price": 11.50})
 
 @app.route('/')

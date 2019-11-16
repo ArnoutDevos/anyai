@@ -54,7 +54,7 @@ const HomePage: React.FC = () => {
 
   const takeScreenshot = () => {
     let screenshots = {
-      // data: screenshot(personRef.current as HTMLVideoElement)
+      person: screenshot(personRef.current as HTMLVideoElement),
       data: screenshot(foodRef.current as HTMLVideoElement)
     };
 
