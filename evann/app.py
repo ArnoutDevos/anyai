@@ -16,7 +16,8 @@ api = ModelApi()
 
 @app.route('/dish', methods=['POST'])
 def dish64():
-    data = request.form.get('food')
+    data = request.form.get('data')
+    print(request.form)
     if not data:
         return "No data"
 
