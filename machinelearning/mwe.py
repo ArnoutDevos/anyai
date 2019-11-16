@@ -14,11 +14,16 @@ model = tensorflow.keras.models.load_model('./models/keras_model_cookies.h5')
 data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
 
 # Replace this with the path to your image
-image = Image.open('Path to your image')
+image = Image.open('./training_data/blue_cookie.png')
+
+dic = {0: 'blue cookie',
+        1: 'green cookie',
+        2: 'empty plate',
+        3: 'background'}
 
 # Make sure to resize all images to 224, 224 otherwise they won't fit in the array
 image.resize((224, 224))
-image_array = np.asarray(image)
+image_array = np.asarray(image)[...,:3]
 
 # Normalize the image
 normalized_image_array = image_array / 255.0
@@ -28,4 +33,5 @@ data[0] = normalized_image_array
 
 # run the inference
 prediction = model.predict(data)
-print(prediction)
+max_pred = np.argmax(prediction)
+print(dic[max_pred])
