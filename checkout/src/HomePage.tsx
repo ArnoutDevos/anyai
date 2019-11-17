@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 import { Container, Spinner, Button } from 'react-bootstrap';
 import { Row } from 'react-bootstrap';
 import { Col } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 
 const FOOD_CAM = 'C922'
 const PERSON_CAM = 'FaceTime'
@@ -14,14 +15,20 @@ type Result = {
   price: number
 }
 
+const DISCOUNTS: any = {
+  'PhD': -1.0,
+  'Master': -2.0  
+}
+
 const HomePage: React.FC = () => {
   const foodRef = useRef<HTMLVideoElement | null>(null);
   const personRef = useRef<HTMLVideoElement | null>(null);
+  let history = useHistory();
 
   const [transaction, setTransaction] = useState<Result | null>(null)
 
   navigator.mediaDevices.enumerateDevices().then(devices => {
-    devices.filter(device => device.kind == "videoinput").forEach(camera => {
+    devices.filter(device => device.kind === "videoinput").forEach(camera => {
       navigator.mediaDevices.getUserMedia({
         video: {
           deviceId: { exact: camera.deviceId },
@@ -69,11 +76,29 @@ const HomePage: React.FC = () => {
       body: JSON.stringify(screenshots)
     }).then((response) => {
       response.json().then((data: Result) => {
-        if (data.food !== "background") {
+        if (data.food !== "background" && data.person !== "background") {
           setTransaction(data)
         }
       })
     })
+  }
+
+  const retry = () => {
+    setTransaction(null)
+  }
+
+  const pay = () => {
+    let fromLocalStorage = localStorage.getItem('checkout_transactions')
+    let transactions = JSON.parse(fromLocalStorage || "[]")
+    if (transaction) {
+      transactions.push({
+        name: transaction.person,
+        item: transaction.food,
+        price: transaction.price + (DISCOUNTS[transaction.status] || 0)
+      })
+      localStorage.setItem('checkout_transactions', JSON.stringify(transactions))
+    }
+    history.push('/paid');
   }
 
   useEffect(() => {
@@ -87,6 +112,20 @@ const HomePage: React.FC = () => {
     }
     return () => clearInterval(interval);
   }, [transaction]);
+
+  const calculateTotal = () => {
+    if (transaction) {
+      return transaction.price + (DISCOUNTS[transaction.status] || 0);
+    }
+  }
+
+  const discount = () => {
+    if (transaction && DISCOUNTS[transaction.status]) {
+      return (<span>
+          ({DISCOUNTS[transaction.status]})
+      </span>)
+    }
+  }
 
   return (
     <Container>
@@ -114,7 +153,7 @@ const HomePage: React.FC = () => {
         <Col sm={4}>
           <video ref={personRef} autoPlay playsInline muted style={{ 'width': '100%' }} />
           {transaction && (
-            <h1>{transaction.person}</h1>
+            <h1>{transaction.person} - {transaction.status}</h1>
           )}
           {!transaction && (
             <div className="text-center">
@@ -123,7 +162,24 @@ const HomePage: React.FC = () => {
               <Spinner animation="grow" />
             </div>
           )}
-          <Button variant="primary" onClick={takeScreenshot}>Screenshot</Button>
+
+          {transaction && (<>
+            <h2>
+              Total: ${calculateTotal()} {discount()}
+            </h2>
+            <Button
+              variant="success"
+              size="lg"
+              onClick={pay}
+              className="mb-4 mt-4 btn-block"
+            >PAY</Button>
+            <Button
+              variant="secondary"
+              size="lg"
+              className="btn-block"
+              onClick={retry}
+            >Retry</Button>
+          </>)}
         </Col>
       </Row>
     </Container >
