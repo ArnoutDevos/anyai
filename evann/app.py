@@ -30,11 +30,20 @@ def dish64():
     person = re.sub('^data:image/.+;base64,', '', person)
     person_image = Image.open(BytesIO(base64.b64decode(person)))
     person_image.save("test.jpg")
-
-    return jsonify({"person": api_person.get_class_id(person_image),
-                    "status": "PhD",
-                    "food": api_food.get_class_id(image),
-                    "price": 11.50})
+    person_class = api_person.get_class_id(person_image)
+    food_class = api_food.get_class_id(image)
+    food_map = {
+        "Green cookie": 4,
+        "Blue cookie":3.5,
+        "Banana": 2,
+        "Noodles":8,
+        "Apple": 3,
+        "Background":2
+    }
+    return jsonify({"person": person_class,
+                    "status": "Master" if person_class == "Ivan" else "PhD",
+                    "food": food_class,
+                    "price": food_map[food_class]})
 
 @app.route('/')
 def index():

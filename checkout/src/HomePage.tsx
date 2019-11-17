@@ -76,7 +76,7 @@ const HomePage: React.FC = () => {
       body: JSON.stringify(screenshots)
     }).then((response) => {
       response.json().then((data: Result) => {
-        if (data.food !== "background" && data.person !== "background") {
+        if (data.food !== "Background" && data.person !== "Background") {
           setTransaction(data)
         }
       })
