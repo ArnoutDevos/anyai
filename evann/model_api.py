@@ -5,7 +5,7 @@ import numpy as np
 
 # model = tensorflow.keras.models.load_model('./models/keras_model_cookies.h5')
 class ModelApi(object):
-    def __init__(self, model_path, dic):
+    def __init__(self, model_path, label_path):
         self.session = tensorflow.Session()
         tensorflow.keras.backend.set_session(self.session)
         init = tensorflow.global_variables_initializer()
@@ -14,8 +14,22 @@ class ModelApi(object):
         self.model = tensorflow.keras.models.load_model(
             model_path)
         self.model._make_predict_function()
-        self.dic = dic
+        
+        self.dic = self.txt_to_list(label_path)
 
+    def txt_to_list(self, label_path):
+        f = open(label_path)
+
+        line = f.readline()
+        dic = []
+        while line:
+            label = line.rstrip().split(' ', 1)[1]
+            dic.append(label)
+            line = f.readline()
+        f.close()
+
+        return dic
+    
     def get_class_id(self, image):
         # Load the model
         # image = Image.open(path, "r")

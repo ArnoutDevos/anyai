@@ -11,8 +11,10 @@ from model_api import ModelApi
 
 app = Flask(__name__)
 
-api_food = ModelApi('./models/keras_model_cookies.h5', ['blue cookie', 'green cookie', 'empty plate', 'background'])
-api_person = ModelApi('./models/keras_model_people.h5', ['ivan', 'arnout', 'evann', 'background'])
+api_food = ModelApi('./models/keras_model_cookies.h5',
+                    './models/labels_cookies.txt')
+api_person = ModelApi('./models/keras_model_people.h5',
+                        './models/labels_people.txt')
 
 @app.route('/dish', methods=['POST'])
 def dish64():

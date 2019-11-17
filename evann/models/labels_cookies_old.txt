@@ -1,0 +1,4 @@
+0 blue cookie
+1 green cookie
+2 Empty plate
+3 Background

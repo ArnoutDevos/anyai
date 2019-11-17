@@ -1,4 +1,6 @@
-0 blue cookie
-1 green cookie
-2 Empty plate
-3 Background
+0 Green cookie
+1 Blue cookie
+2 Banana
+3 Noodles
+4 Apple
+5 Background
