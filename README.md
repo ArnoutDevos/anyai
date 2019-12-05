@@ -1,9 +1,7 @@
-# anyai
-Usecase: automated restaurant checkout
+# AnyAI
+AnyAI allows any business to record its current products being offered (e.g., on a daily basis) with a few image examples per product. Together with a userbase with profile pictures, AnyAI can visually detect the current product that a customer is buying and identify the customer at the same time. This way, the customer is charged automatically for the right product and checking out only takes 2 seconds, instead of the usual 10 or 20.
 
-Scan your plate, show your face, and you will automatically be billed. No human interaction required, much quicker.
-
-## Installing
+## Requirements
 - TensorFlow 1.15.0
 
 ## Running
